@@ -1,71 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';  // Import for currency formatting
-import 'sum_page.dart';
 
-class DashboardPage extends StatefulWidget {
-  final List<Map<String, dynamic>> fixedUsage;
-  final List<Map<String, dynamic>> additionalUsage;
-
-  DashboardPage({Key? key, required this.fixedUsage, required this.additionalUsage}) : super(key: key);
-
-  @override
-  DashboardPageState createState() => DashboardPageState();
-}
-
-class DashboardPageState extends State<DashboardPage> {
-  String formatCurrency(double value) {
-    final format = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 2);
-    return format.format(value);
-  }
-
-  void onSave(List<Map<String, dynamic>> fixed, List<Map<String, dynamic>> additional) {
-    setState(() {
-      widget.fixedUsage.addAll(fixed);
-      widget.additionalUsage.addAll(additional);
-    });
-  }
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Calculate the total wattage and total cost, ensuring we handle null or non-integer 'usage' correctly
-    int totalWatt = widget.fixedUsage.fold(0, (sum, item) {
-      int usage = (item['usage'] is int) ? item['usage'] : 0; // Ensure it's an integer
-      return sum + usage;
-    });
-
-    double totalCost = widget.fixedUsage.fold(0.0, (sum, item) {
-      double cost = (item['cost'] is double) ? item['cost'] : 0.0; // Ensure it's a double
-      return sum + cost;
-    });
-
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 10),
-            // Watt usage and total cost
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [
-                    Text('Pemakaian Hari Ini'),
-                    Text('$totalWatt Watt', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Text('Total Biaya'),
-                    Text(formatCurrency(totalCost), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ],
+            // Header Section
+            Container(
+              color: Colors.blue,
+              padding: EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Column(
+                    children: [
+                      Icon(Icons.flash_on, color: Colors.yellow, size: 32),
+                      Text(
+                        "Pemakaian Hari Ini",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      Text(
+                        "999 Watt",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Icon(Icons.attach_money, color: Colors.white, size: 32),
+                      Text(
+                        "Total Biaya",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      Text(
+                        "Rp230,000.00",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            // List of fixed and additional usage
-            SizedBox(height: 20),
-            //yang baru
+            // Insight Section
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InsightCard(),
+                  InsightCard(),
+                ],
+              ),
+            ),
+            // List Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -83,11 +72,10 @@ class DashboardPageState extends State<DashboardPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                CategoryCard(label: "Pemakaian Tetap", count: "${widget.fixedUsage.length}"),
-                CategoryCard(label: "Pemakaian Tambahan", count: "${widget.additionalUsage.length}"),
+                CategoryCard(label: "Pemakaian Tetap", count: "10"),
+                CategoryCard(label: "Pemakaian Tambahan", count: "10"),
               ],
             ),
-            SizedBox(height: 10,),
             // Recently Added Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -102,7 +90,40 @@ class DashboardPageState extends State<DashboardPage> {
                 ],
               ),
             ),
+            RecentlyAddedItem(
+              category: "Pemakaian Tetap",
+              itemName: "Kulkas 2 Pintu",
+              usage: "324.3 watt/tahun",
+              cost: "Rp 134.460",
+            ),
+            RecentlyAddedItem(
+              category: "Pemakaian Tambahan",
+              itemName: "Lampu",
+              usage: "324.3 watt/tahun",
+              cost: "Rp 134.460",
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class InsightCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.4,
+      height: 120,
+      decoration: BoxDecoration(
+        color: Colors.blue[100],
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(
+        child: Text(
+          "Tarif biaya semakin meningkat",
+          style: TextStyle(color: Colors.black, fontSize: 14),
+          textAlign: TextAlign.center,
         ),
       ),
     );
