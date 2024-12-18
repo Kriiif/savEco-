@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dashboard_page.dart';
+import 'package:saveco_project/dashboard_page.dart';
 
 class SumPage extends StatefulWidget {
   final List<Map<String, dynamic>> fixedUsage;
@@ -17,43 +17,34 @@ class SumPage extends StatefulWidget {
 }
 
 class _SumPageState extends State<SumPage> {
-  late List<Map<String, dynamic>> fixedUsage;
-  late List<Map<String, dynamic>> additionalUsage;
-
   final TextEditingController nameController = TextEditingController();
   final TextEditingController usageController = TextEditingController();
   final TextEditingController durationController = TextEditingController();
 
   String type = 'Tetap';
-  double tariff = 1444.70; // Tarif listrik per kWh (Rp)
-
-  @override
-  void initState() {
-    super.initState();
-    fixedUsage = List.from(widget.fixedUsage);
-    additionalUsage = List.from(widget.additionalUsage);
-  }
+  double tariff = 1444.70;
 
   void _addUsage() {
     final name = nameController.text.trim();
-    final usage = int.tryParse(usageController.text.trim()) ?? 0; // Watt
-    final duration = double.tryParse(durationController.text.trim()) ?? 0.0; // Jam
+    final usage = int.tryParse(usageController.text.trim()) ?? 0;
+    final duration = double.tryParse(durationController.text.trim()) ?? 0.0;
 
     if (name.isNotEmpty && usage > 0 && duration > 0.0) {
-      final cost = (usage / 1000) * duration * tariff; // Hitung biaya listrik
+      final cost = (usage / 1000) * duration * tariff;
       final newItem = {
         'name': name,
         'usage': usage,
         'duration': duration,
         'cost': cost,
         'category': type,
+        'timestamp': DateTime.now(), // Add timestamp
       };
 
       setState(() {
         if (type == 'Tetap') {
-          fixedUsage.add(newItem);
+          widget.fixedUsage.add(newItem);
         } else {
-          additionalUsage.add(newItem);
+          widget.additionalUsage.add(newItem);
         }
       });
 
@@ -87,33 +78,29 @@ class _SumPageState extends State<SumPage> {
             ),
             TextField(
               controller: nameController,
-              decoration: InputDecoration(labelText: 'Nama Perangkat'),
+              decoration: const InputDecoration(labelText: 'Nama Perangkat'),
             ),
             TextField(
               controller: usageController,
-              decoration: InputDecoration(labelText: 'Penggunaan (Watt)'),
+              decoration: const InputDecoration(labelText: 'Penggunaan (Watt)'),
               keyboardType: TextInputType.number,
             ),
             TextField(
               controller: durationController,
-              decoration: InputDecoration(labelText: 'Durasi Pemakaian (jam)'),
+              decoration: const InputDecoration(labelText: 'Durasi Pemakaian (jam)'),
               keyboardType: TextInputType.number,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _addUsage,
-              child: Text('Tambah'),
+              child: const Text('Tambah'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                widget.onSave(fixedUsage, additionalUsage);
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => DashboardPage(fixedUsage: fixedUsage, additionalUsage: additionalUsage)),
-                );// Correct navigation to return to DashboardPage
+                widget.onSave(widget.fixedUsage, widget.additionalUsage);
               },
-              child: Text('Simpan dan Kembali'),
+              child: const Text('Simpan dan Kembali'),
             ),
           ],
         ),

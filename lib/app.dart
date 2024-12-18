@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dashboard_page.dart';
 import 'sum_page.dart';
-import 'dash.dart';
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
@@ -17,6 +16,9 @@ class _FooterState extends State<Home> {
   // Define a dummy user name
   String userName = 'User'; // You can replace this with a dynamic user name if needed
 
+  List<Map<String, dynamic>> fixedUsage = [];
+  List<Map<String, dynamic>> additionalUsage = [];
+
   List<Widget> bods = [];
 
   @override
@@ -26,10 +28,17 @@ class _FooterState extends State<Home> {
       // Pass the required parameters to DashboardPage
       DashboardPage(
         key: dashboardPageKey,
-        fixedUsage: [],
-        additionalUsage: [],
+        fixedUsage: fixedUsage,
+        additionalUsage: additionalUsage,
       ),
-      HomePage(),
+      const Center(
+        child: Text(
+          'Under\nMaintenance...',
+          style: TextStyle(
+              color: Colors.black, fontSize: 40, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+      ),
       const Center(
         child: Text(
           'Under\nMaintenance...',
@@ -39,8 +48,8 @@ class _FooterState extends State<Home> {
         ),
       ),
       SumPage(
-        fixedUsage: dashboardPageKey.currentState?.widget.fixedUsage ?? [],
-        additionalUsage: dashboardPageKey.currentState?.widget.additionalUsage ?? [],
+        fixedUsage: fixedUsage,
+        additionalUsage: additionalUsage,
         onSave: onSave,
       ),
       const Center(
@@ -55,6 +64,11 @@ class _FooterState extends State<Home> {
   }
 
   void onSave(List<Map<String, dynamic>> fixed, List<Map<String, dynamic>> additional) {
+    setState(() {
+      fixedUsage = fixed;
+      additionalUsage = additional;
+      _curidx = 0;
+    });
     if (dashboardPageKey.currentState != null) {
       dashboardPageKey.currentState?.onSave(fixed, additional);
     }
