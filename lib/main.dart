@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dashboard_page.dart';
 import 'app.dart';
+import './login/login.dart';
+import './welcome/welcome.dart';
 
 void main() {
   runApp(SavECOApp());
@@ -14,7 +16,7 @@ class SavECOApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Home(),
+      home: WelcomePage(),
     );
   }
 }
