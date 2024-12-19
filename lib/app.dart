@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dashboard_page.dart';
 import 'sum_page.dart';
+import 'list_page.dart';
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
@@ -31,13 +32,9 @@ class _FooterState extends State<Home> {
         fixedUsage: fixedUsage,
         additionalUsage: additionalUsage,
       ),
-      const Center(
-        child: Text(
-          'Under\nMaintenance...',
-          style: TextStyle(
-              color: Colors.black, fontSize: 40, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
-        ),
+      ListPage(
+        fixedItems: fixedUsage,
+        additionalItems: additionalUsage,
       ),
       const Center(
         child: Text(
