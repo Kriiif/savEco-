@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:saveco_project/dashboard_page.dart';
 import 'package:saveco_project/register/register.dart';
+import 'package:saveco_project/app.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>>? temp;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back_ios),
-          iconSize: 20,
-          color: Colors.black,
-        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -59,7 +54,12 @@ class LoginPage extends StatelessWidget {
               MaterialButton(
                 minWidth: double.infinity,
                 height: 60,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => Home()),
+                  );
+                },
                 color: Color(0xff0095FF),
                 elevation: 0,
                 shape: RoundedRectangleBorder(
@@ -87,7 +87,7 @@ class LoginPage extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> RegisterPage()));
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> RegisterPage()));
                     },
                     child: Text(
                       " Register",
