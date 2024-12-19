@@ -12,14 +12,6 @@ class RegisterPage extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back_ios),
-          iconSize: 20,
-          color: Colors.black,
-        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -61,7 +53,12 @@ class RegisterPage extends StatelessWidget {
               MaterialButton(
                 minWidth: double.infinity,
                 height: 60,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
+                },
                 color: Color(0xff0095FF),
                 elevation: 0,
                 shape: RoundedRectangleBorder(
