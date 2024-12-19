@@ -14,7 +14,7 @@ class DashboardPage extends StatefulWidget {
 
 class DashboardPageState extends State<DashboardPage> {
   String formatCurrency(double value) {
-    final format = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 2);
+    final format = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0);
     return format.format(value);
   }
 
@@ -54,6 +54,7 @@ class DashboardPageState extends State<DashboardPage> {
     });
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Padding(
         padding: const EdgeInsets.all(0),
         child: Column(
@@ -165,7 +166,6 @@ class DashboardPageState extends State<DashboardPage> {
                     "Insight",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  Icon(Icons.arrow_forward),
                 ],
               ),
             ),
@@ -212,7 +212,6 @@ class DashboardPageState extends State<DashboardPage> {
                     "Recently Added",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  Icon(Icons.arrow_forward),
                 ],
               ),
             ),
@@ -365,7 +364,7 @@ class RecentlyAddedCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
         leading: Icon(
-          item['category'] == 'Tetap' ? Icons.lock : Icons.add,
+          item['category'] == 'Tetap' ? Icons.lock : Icons.add_circle,
           size: 40,
           color: Colors.blue,
         ),
