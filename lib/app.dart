@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:saveco_project/profile.dart';
 import 'dashboard_page.dart';
+import 'insight.dart';
 import 'sum_page.dart';
 import 'list_page.dart';
 
 class Home extends StatefulWidget {
-  Home({Key? key}) : super(key: key);
+  Home({Key? key, required this.username}) : super(key: key);
+  final String username;
 
   @override
   State<Home> createState() => _FooterState();
@@ -31,31 +34,24 @@ class _FooterState extends State<Home> {
         key: dashboardPageKey,
         fixedUsage: fixedUsage,
         additionalUsage: additionalUsage,
+        username: widget.username,
       ),
       ListPage(
         fixedItems: fixedUsage,
         additionalItems: additionalUsage,
       ),
-      const Center(
-        child: Text(
-          'Under\nMaintenance...',
-          style: TextStyle(
-              color: Colors.black, fontSize: 40, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
-        ),
+      const InsightSection(
+
       ),
       SumPage(
         fixedUsage: fixedUsage,
         additionalUsage: additionalUsage,
         onSave: onSave,
       ),
-      const Center(
-        child: Text(
-          'Under\nMaintenance...',
-          style: TextStyle(
-              color: Colors.black, fontSize: 40, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
-        ),
+      ProfileUser(
+        fixedUsage: fixedUsage,
+        additionalUsage: additionalUsage,
+        username: widget.username,
       ),
     ];
   }
@@ -74,7 +70,12 @@ class _FooterState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('saveEco!')),
+      appBar: AppBar(
+        title: Image.asset(
+          'assets/images/savecooo.png', // Replace with your image's path
+          height: 40, // Adjust height as needed
+        ), // Optional: Centers the image
+      ),
       body: bods[_curidx],
       bottomNavigationBar: BottomNavigationBar(
         onTap: (int newidx) {
@@ -106,7 +107,7 @@ class _FooterState extends State<Home> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_rounded),
-            label: 'Akun',
+            label: 'Account',
             backgroundColor: Colors.blue,
           ),
         ],

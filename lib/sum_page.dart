@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:saveco_project/dashboard_page.dart';
+import 'package:intl/intl.dart'; // Add this package for date formatting and parsing
 
 class SumPage extends StatefulWidget {
   final List<Map<String, dynamic>> fixedUsage;
@@ -20,6 +20,7 @@ class _SumPageState extends State<SumPage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController usageController = TextEditingController();
   final TextEditingController durationController = TextEditingController();
+  final TextEditingController dateController = TextEditingController();
 
   String type = 'Tetap';
   double tariff = 1444.70;
@@ -28,8 +29,22 @@ class _SumPageState extends State<SumPage> {
     final name = nameController.text.trim();
     final usage = int.tryParse(usageController.text.trim()) ?? 0;
     final duration = double.tryParse(durationController.text.trim()) ?? 0.0;
+    final dateInput = dateController.text.trim();
 
-    if (name.isNotEmpty && usage > 0 && duration > 0.0) {
+    // Validate and parse date input
+    DateTime? date;
+    if (dateInput.isNotEmpty) {
+      try {
+        date = DateFormat('dd-MM-yyyy').parseStrict(dateInput);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Invalid date format. Use DD-MM-YYYY.')),
+        );
+        return;
+      }
+    }
+
+    if (name.isNotEmpty && usage > 0 && duration > 0.0 && date != null) {
       final cost = (usage / 1000) * duration * tariff;
       final newItem = {
         'name': name,
@@ -37,7 +52,8 @@ class _SumPageState extends State<SumPage> {
         'duration': duration,
         'cost': cost,
         'category': type,
-        'timestamp': DateTime.now(), // Add timestamp
+        'timestamp': DateTime.now(),
+        'date': DateFormat('dd-MM-yyyy').format(date), // Store formatted date
       };
 
       setState(() {
@@ -51,6 +67,7 @@ class _SumPageState extends State<SumPage> {
       nameController.clear();
       usageController.clear();
       durationController.clear();
+      dateController.clear();
     }
   }
 
@@ -58,51 +75,64 @@ class _SumPageState extends State<SumPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Input Pemakaian')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            DropdownButton<String>(
-              value: type,
-              items: ['Tetap', 'Tambahan'].map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  type = value!;
-                });
-              },
+      body: SingleChildScrollView(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 600),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  DropdownButton<String>(
+                    value: type,
+                    items: ['Tetap', 'Tambahan'].map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        type = value!;
+                      });
+                    },
+                  ),
+                  TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(labelText: 'Nama Perangkat'),
+                  ),
+                  TextField(
+                    controller: usageController,
+                    decoration: const InputDecoration(labelText: 'Penggunaan (Watt)'),
+                    keyboardType: TextInputType.number,
+                  ),
+                  TextField(
+                    controller: durationController,
+                    decoration: const InputDecoration(labelText: 'Durasi Pemakaian (jam)'),
+                    keyboardType: TextInputType.number,
+                  ),
+                  TextField(
+                    controller: dateController,
+                    decoration: const InputDecoration(labelText: 'Tanggal (DD-MM-YYYY)'),
+                    keyboardType: TextInputType.datetime,
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _addUsage,
+                    child: const Text('Tambah'),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      widget.onSave(widget.fixedUsage, widget.additionalUsage);
+                    },
+                    child: const Text('Simpan dan Kembali'),
+                  ),
+                ],
+              ),
             ),
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(labelText: 'Nama Perangkat'),
-            ),
-            TextField(
-              controller: usageController,
-              decoration: const InputDecoration(labelText: 'Penggunaan (Watt)'),
-              keyboardType: TextInputType.number,
-            ),
-            TextField(
-              controller: durationController,
-              decoration: const InputDecoration(labelText: 'Durasi Pemakaian (jam)'),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _addUsage,
-              child: const Text('Tambah'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                widget.onSave(widget.fixedUsage, widget.additionalUsage);
-              },
-              child: const Text('Simpan dan Kembali'),
-            ),
-          ],
+          ),
         ),
       ),
     );

@@ -29,7 +29,11 @@ class WelcomePage extends StatelessWidget {
                       fontSize: 30,
                       color: Colors.white,
                     ),
-                  )
+                  ), // Spacing between text and image
+                  Image.asset(
+                    'assets/images/savecoo.png', // Replace with your image path
+                    height: 300, // Adjust the height as needed
+                  ),
                 ],
               ),
 

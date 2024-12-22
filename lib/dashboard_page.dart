@@ -5,8 +5,9 @@ import 'sum_page.dart';
 class DashboardPage extends StatefulWidget {
   final List<Map<String, dynamic>> fixedUsage;
   final List<Map<String, dynamic>> additionalUsage;
+  final String username;
 
-  DashboardPage({Key? key, required this.fixedUsage, required this.additionalUsage}) : super(key: key);
+  DashboardPage({Key? key, required this.fixedUsage, required this.additionalUsage, required this.username}) : super(key: key);
 
   @override
   DashboardPageState createState() => DashboardPageState();
@@ -73,7 +74,7 @@ class DashboardPageState extends State<DashboardPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                     child: Text(
-                      'Selamat Pagi, Name! Jangan lupa berhemat',
+                      'Selamat Pagi, ${widget.username}! Jangan lupa berhemat',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
@@ -166,6 +167,7 @@ class DashboardPageState extends State<DashboardPage> {
                     "Insight",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
+                  Icon(Icons.arrow_forward),
                 ],
               ),
             ),
@@ -361,7 +363,7 @@ class RecentlyAddedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16.0),
       child: ListTile(
         leading: Icon(
           item['category'] == 'Tetap' ? Icons.lock : Icons.add_circle,
