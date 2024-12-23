@@ -31,21 +31,34 @@ class _SumPageState extends State<SumPage> {
     final duration = double.tryParse(durationController.text.trim()) ?? 0.0;
     final dateInput = dateController.text.trim();
 
-    // Validate and parse date input
+    // Parse dan validasi input tanggal
     DateTime? date;
     if (dateInput.isNotEmpty) {
       try {
         date = DateFormat('dd-MM-yyyy').parseStrict(dateInput);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Invalid date format. Use DD-MM-YYYY.')),
+          SnackBar(content: Text('Format tanggal salah. Gunakan DD-MM-YYYY.')),
         );
         return;
       }
     }
 
+    // Ambil tanggal hari ini
+    final today = DateTime.now();
+    final todayString = DateFormat('dd-MM-yyyy').format(today);
+
+    // Validasi tanggal harus hari ini
+    if (date != null && DateFormat('dd-MM-yyyy').format(date) != todayString) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Tanggal harus sesuai dengan hari ini.')),
+      );
+      return;
+    }
+
+    // Validasi data lainnya sebelum input
     if (name.isNotEmpty && usage > 0 && duration > 0.0 && date != null) {
-      final cost = (usage / 1000) * duration * tariff;
+      final cost = (usage / 1000) * duration * tariff; // Kalkulasi biaya
       final newItem = {
         'name': name,
         'usage': usage,
@@ -53,7 +66,7 @@ class _SumPageState extends State<SumPage> {
         'cost': cost,
         'category': type,
         'timestamp': DateTime.now(),
-        'date': DateFormat('dd-MM-yyyy').format(date), // Store formatted date
+        'date': todayString, // Simpan tanggal hari ini
       };
 
       setState(() {
@@ -64,10 +77,15 @@ class _SumPageState extends State<SumPage> {
         }
       });
 
+      // Reset input form
       nameController.clear();
       usageController.clear();
       durationController.clear();
       dateController.clear();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Semua data harus diisi dengan benar.')),
+      );
     }
   }
 

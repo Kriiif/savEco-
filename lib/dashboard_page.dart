@@ -57,8 +57,14 @@ class DashboardPageState extends State<DashboardPage> {
       ...widget.additionalUsage,
     ];
 
+    // Filter hanya data hari ini
+    final today = DateFormat('dd-MM-yyyy').format(DateTime.now());
+    allUsage = allUsage.where((item) => item['date'] == today).toList();
+
+    // Sort data berdasarkan timestamp terbaru
     allUsage.sort((a, b) => (b['timestamp'] as DateTime).compareTo(a['timestamp'] as DateTime));
 
+    // Ambil maksimal 2 data terakhir
     List<Map<String, dynamic>> recentlyAdded = allUsage.take(2).toList();
 
     // Calculate the total wattage and total cost, ensuring we handle null or non-integer 'usage' correctly
