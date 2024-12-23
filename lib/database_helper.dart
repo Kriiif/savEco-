@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
-import '../models/notes.dart';
+import 'notes.dart';
 
 class DatabaseHelper {
   static DatabaseHelper? _databaseHelper; // Singleton DatabaseHelper
