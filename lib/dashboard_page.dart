@@ -14,6 +14,30 @@ class DashboardPage extends StatefulWidget {
 }
 
 class DashboardPageState extends State<DashboardPage> {
+  Future<Map<String, dynamic>> getPemakaianHariIni() async {
+  // Get today's date
+  final today = DateFormat('dd-MM-yyyy').format(DateTime.now());
+
+  // Filter usage for today
+  final todayUsage = [
+    ...widget.fixedUsage.where((item) => item['date'] == today),
+    ...widget.additionalUsage.where((item) => item['date'] == today),
+  ];
+
+  // Calculate total watt and cost for today
+  final totalWatt = todayUsage.fold<int>(0, (sum, item) {
+    final usage = item['usage'] is int ? item['usage'] as int : 0;
+    return sum + usage;
+  });
+
+  final totalCost = todayUsage.fold<double>(0.0, (sum, item) {
+    final cost = item['cost'] is num ? item['cost'].toDouble() : 0.0;
+    return sum + cost;
+  });
+
+  return {'totalWatt': totalWatt, 'totalCost': totalCost};
+}
+
   String formatCurrency(double value) {
     final format = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0);
     return format.format(value);
@@ -116,10 +140,30 @@ class DashboardPageState extends State<DashboardPage> {
                                       fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(height: 4),
-                                Text(
-                                  '$totalWatt Watt',
-                                  style: TextStyle(
-                                      fontSize: 16, fontWeight: FontWeight.bold),
+                                FutureBuilder(
+                                  future: getPemakaianHariIni(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return Text(
+                                        'Loading...',
+                                        style: TextStyle(
+                                            fontSize: 16, fontWeight: FontWeight.bold),
+                                      );
+                                    } else if (snapshot.hasError) {
+                                      return Text(
+                                        'Error',
+                                        style: TextStyle(
+                                            fontSize: 16, fontWeight: FontWeight.bold),
+                                      );
+                                    } else {
+                                      final data = snapshot.data as Map<String, dynamic>;
+                                      return Text(
+                                        '${data['totalWatt']} Watt',
+                                        style: TextStyle(
+                                            fontSize: 16, fontWeight: FontWeight.bold),
+                                      );
+                                    }
+                                  },
                                 ),
                               ],
                             ),
@@ -142,15 +186,85 @@ class DashboardPageState extends State<DashboardPage> {
                                       fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(height: 4),
-                                Text(
-                                  formatCurrency(totalCost),
-                                  style: TextStyle(
-                                      fontSize: 16, fontWeight: FontWeight.bold),
+                                FutureBuilder(
+                                  future: getPemakaianHariIni(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return Text(
+                                        'Loading...',
+                                        style: TextStyle(
+                                            fontSize: 16, fontWeight: FontWeight.bold),
+                                      );
+                                    } else if (snapshot.hasError) {
+                                      return Text(
+                                        'Error',
+                                        style: TextStyle(
+                                            fontSize: 16, fontWeight: FontWeight.bold),
+                                      );
+                                    } else {
+                                      final data = snapshot.data as Map<String, dynamic>;
+                                      return Text(
+                                        formatCurrency(data['totalCost']),
+                                        style: TextStyle(
+                                            fontSize: 16, fontWeight: FontWeight.bold),
+                                      );
+                                    }
+                                  },
                                 ),
                               ],
                             ),
                           ],
                         ),
+                        // Row(
+                        //   children: [
+                        //     Icon(Icons.bolt, color: Colors.yellow, size: 28),
+                        //     SizedBox(width: 8),
+                        //     Column(
+                        //       crossAxisAlignment: CrossAxisAlignment.start,
+                        //       children: [
+                        //         Text(
+                        //           'Pemakaian Hari Ini',
+                        //           style: TextStyle(
+                        //               fontSize: 12,
+                        //               color: Colors.black54,
+                        //               fontWeight: FontWeight.bold),
+                        //         ),
+                        //         SizedBox(height: 4),
+                        //         Text(
+                        //           '$totalWatt Watt',
+                        //           style: TextStyle(
+                        //               fontSize: 16, fontWeight: FontWeight.bold),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ],
+                        // ),
+                        // // Total Biaya
+                        // Row(
+                        //   children: [
+                        //     Icon(Icons.account_balance_wallet,
+                        //         color: Colors.lightBlue, size: 28),
+                        //     SizedBox(width: 8),
+                        //     Column(
+                        //       crossAxisAlignment: CrossAxisAlignment.start,
+                        //       children: [
+                        //         Text(
+                        //           'Total Biaya',
+                        //           style: TextStyle(
+                        //               fontSize: 12,
+                        //               color: Colors.black54,
+                        //               fontWeight: FontWeight.bold),
+                        //         ),
+                        //         SizedBox(height: 4),
+                        //         Text(
+                        //           formatCurrency(totalCost),
+                        //           style: TextStyle(
+                        //               fontSize: 16, fontWeight: FontWeight.bold),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ],
+                        // ),
                       ],
                     ),
                   ),
