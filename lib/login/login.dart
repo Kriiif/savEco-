@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saveco_project/dashboard_page.dart';
 import 'package:saveco_project/register/register.dart';
 import 'package:saveco_project/app.dart';
+import 'package:saveco_project/controller/database_helper.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -83,19 +84,32 @@ class LoginPage extends StatelessWidget {
                 MaterialButton(
                   minWidth: double.infinity,
                   height: 60,
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => Home(username: _usernameController.text,)),
+                      final dbHelper = DatabaseHelper();
+                      final user = await dbHelper.loginUser(
+                        _usernameController.text,
+                        _passwordController.text,
                       );
+
+                      if (user != null) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Home(username: user['username']),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Invalid email or password.")),
+                        );
+                      }
                     }
                   },
                   color: Color(0xff0095FF),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)
-                  ),
+                      borderRadius: BorderRadius.circular(20)),
                   child: Text(
                     "Login",
                     style: TextStyle(
@@ -111,22 +125,21 @@ class LoginPage extends StatelessWidget {
                   children: [
                     Text(
                       "Not have an account?",
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[700]
-                      ),
+                      style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                     ),
                     GestureDetector(
-                      onTap: (){
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> RegisterPage()));
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => RegisterPage()),
+                        );
                       },
                       child: Text(
                         " Register",
                         style: TextStyle(
                             fontSize: 14,
                             color: Colors.black,
-                            fontWeight: FontWeight.bold
-                        ),
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saveco_project/login/login.dart';
+import 'package:saveco_project/controller/database_helper.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -10,7 +11,6 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -107,13 +107,22 @@ class _RegisterPageState extends State<RegisterPage> {
                   ],
                 ),
                 SizedBox(height: 20),
-
                 MaterialButton(
                   minWidth: double.infinity,
                   height: 60,
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      // If the form is valid, navigate to the Login Page
+                      final dbHelper = DatabaseHelper();
+                      await dbHelper.registerUser(
+                        _usernameController.text,
+                        _emailController.text,
+                        _passwordController.text,
+                      );
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Registration successful! Please log in.")),
+                      );
+
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => LoginPage()),
@@ -140,10 +149,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   children: [
                     Text(
                       "Already have an account?",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[700],
-                      ),
+                      style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                     ),
                     GestureDetector(
                       onTap: () {

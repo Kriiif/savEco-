@@ -4,6 +4,7 @@ import 'dashboard_page.dart';
 import 'insight.dart';
 import 'sum_page.dart';
 import 'list_page.dart';
+import 'profile.dart';
 
 class Home extends StatefulWidget {
   Home({Key? key, required this.username}) : super(key: key);
