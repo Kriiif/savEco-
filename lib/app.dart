@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:saveco_project/profile.dart';
 import 'dashboard_page.dart';
 import 'insight.dart';
 import 'sum_page.dart';
 import 'list_page.dart';
 import 'profile.dart';
+import 'package:saveco_project/controller/database_helper.dart';
 
 class Home extends StatefulWidget {
-  Home({Key? key, required this.username}) : super(key: key);
+  Home({Key? key, required this.username, required this.userId}) : super(key: key);
   final String username;
+  final int userId;
 
   @override
   State<Home> createState() => _FooterState();
@@ -36,6 +37,7 @@ class _FooterState extends State<Home> {
         fixedUsage: fixedUsage,
         additionalUsage: additionalUsage,
         username: widget.username,
+        userId: widget.userId,
       ),
       ListPage(
         fixedItems: fixedUsage,
@@ -48,6 +50,7 @@ class _FooterState extends State<Home> {
         fixedUsage: fixedUsage,
         additionalUsage: additionalUsage,
         onSave: onSave,
+        userId: widget.userId,
       ),
       ProfileUser(
         fixedUsage: fixedUsage,
@@ -63,9 +66,6 @@ class _FooterState extends State<Home> {
       additionalUsage = additional;
       _curidx = 0;
     });
-    if (dashboardPageKey.currentState != null) {
-      dashboardPageKey.currentState?.onSave(fixed, additional);
-    }
   }
 
   @override

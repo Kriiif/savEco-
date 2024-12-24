@@ -96,7 +96,10 @@ class LoginPage extends StatelessWidget {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Home(username: user['username']),
+                            builder: (context) => Home(
+                              username: user['username'],
+                              userId: user['id'], 
+                            ),
                           ),
                         );
                       } else {
