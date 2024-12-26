@@ -1,3 +1,3 @@
 # saveco_project
 
-A new Flutter project.
+Project UAS Desain Pemrograman Berbasis Objek.
